@@ -1,5 +1,5 @@
 EXCLUDE
-CVS
+.git
 TODO
 Makefile
 config.log
