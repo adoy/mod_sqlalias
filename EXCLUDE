@@ -1,0 +1,9 @@
+EXCLUDE
+CVS
+TODO
+Makefile
+config.log
+config.status
+configure.ac
+autom4te.cache
+mod_sqlalias

@@ -1,0 +1,66 @@
+#
+# Note : Code is released under the GNU LGPL
+#
+# Copyright (C) 2008 WebStart.fr
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+#
+# $Id: Makefile.in,v 1.4 2008/10/06 19:13:42 adoy Stable $
+
+#	the used tools
+APXS=@apxspath@
+APACHECTL=@apachectlpath@
+
+CFLAGS=	@CFLAGS@ -Wall -Wmissing-declarations -DEAPI
+LIBS=	@LDFLAGS@ @LIBS@
+OBJ=	mod_sqlalias.o
+
+#   the default target
+all: mod_sqlalias.so
+
+#   compile the DSO file
+mod_sqlalias.so:
+	$(APXS) -c $(LIBS) mod_sqlalias.c 
+
+
+#   install the DSO file into the Apache installation
+#   and activate it in the Apache configuration
+install: 
+	$(APXS) $(LIBS) -i -a -n 'sqlalias' -c  mod_sqlalias.c
+
+#	create the package 
+DISTDIR=./@PACKAGE_TARNAME@
+DISTPACKAGE=../@PACKAGE_TARNAME@-@PACKAGE_VERSION@.tgz
+
+dist: distclean
+	mkdir ${DISTDIR}
+	tar -c -f - -X EXCLUDE . | tar xpf - -C ${DISTDIR}
+	tar -czf ${DISTPACKAGE} ${DISTDIR}
+	rm -rf ${DISTDIR}
+
+#   cleanup
+clean:
+	-rm -rf ${OBJ} mod_sqlalias.so *.la *.lo *.slo .libs
+
+distclean: clean
+	rm -f config.log config.status Makefile mod_sqlalias.h
+
+
+#   reload the module by installing and restarting Apache
+reload: install restart
+
+#   the general Apache start/restart/stop procedures
+start:
+	$(APACHECTL) start
+restart:
+	$(APACHECTL) restart
+stop:
+	$(APACHECTL) stop

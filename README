@@ -1,0 +1,76 @@
+                SQL Alias Module for Apache 2.x
+                ===============================
+
+Sqlalias module will intercept specific URI requests and dispatch them 
+to the appropriate page to be served using a MySQL alias table. The MySQL
+alias table will hold aliases and their corresponding files. A file may
+have more than one alias which references to it, but an alias cannot point
+to more than one file.
+
+INSTALL:
+========
+
+After obtaining the latest version of the sqlalias module source code, 
+change into the source directory (mod_sqlalias), and run "./configure".
+To see the various ways in which you can customize your installation, 
+run "./configure --help".
+
+The configure process will check your environment and prepare itself for
+compiling the source code. If one or more of the prerequisites cannot be
+found, configure will terminate with an error. You will need to resolve
+this and run configure again.
+
+If configure runs without error(s), you are ready to compile. To compile 
+mod_sqlalias, run "make". If the source code does not compile, make sure
+your environment is setup correctly. If you are convinced the source of the
+failure is mod_sqlalias, gather all relevant information about your system such
+as the Apache version, OS version, the configure statement you used, etc. and
+contact pierrick@webstart.fr
+
+Once mod_sqlalias is compiled, install it by running "make install".
+
+CONFIGURATION:
+==============
+
+#
+# SQL Alias Module can be configured on a full web server or just
+# on specific virtual hosts.
+#
+
+<IfModule sqlalias_module>
+
+#
+# The SQLAliasEnable directive enables or disables the SQL Alias Engine.
+# If it is set to off, this module does no runtime processing at all.
+#
+SQLAliasEnable  On
+
+#
+# The SQLAliasDbParam directive allows you to configure your mysql connection.
+# You can configure the connection to use wether a TCP connection or a Unix socket.
+#
+SQLAliasDbParam hostname 127.0.0.1
+SQLAliasDbParam username "root"
+SQLAliasDbParam password "lolmdr"
+SQLAliasDbParam database "test"
+SQLAliasDbParam port 3306
+SQLAliasDbParam socketfile "/path/to/mysql.sock"
+
+#
+# The SQLAliasQuery directive defines the MySQL query that will be executed to 
+# get the rewrited URI. The first returned column must be the rewrite/redirect
+# address for your source (this can be a relative path or an URI). 
+# The second column (not mandatory) is the apache HTTP response code.
+#
+# SQLAliasQuery "SELECT destination, code FROM table WHERE source='%s' LIMIT 1"
+#
+SQLAliasQuery "SELECT dest FROM myalias WHERE source='%s' LIMIT 1"
+
+#
+# The SQLAliasFilter directive define filters.
+# If the URI matches one of them, the rewriting will not take place.
+# The directive can occur more than once, with each instance defining a filter.
+#
+SQLAliasFilter .php$
+
+</IfModule>

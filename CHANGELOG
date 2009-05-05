@@ -1,0 +1,4 @@
+1.0.1
+=====
+    - Fix a bug where mod_deflate create a buffer over the mysql result set memory when this one is still used.
+      (Thanks to Kris for finding and reporting this bug)
