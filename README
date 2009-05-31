@@ -29,6 +29,11 @@ contact pierrick@webstart.fr
 
 Once mod_sqlalias is compiled, install it by running "make install".
 
+It's also possible to add manualy the LoadModule directive into your apache
+configuration file
+
+LoadModule sqlalias_module /path/to/mod_sqlalias.so
+
 CONFIGURATION:
 ==============
 

@@ -1,4 +1,16 @@
+1.0.3
+=====
+    - Add two new optional params in the configure script 
+           --with-mysql=DIR and --with-apxs2=DIR
+    - Remove a useless variable in the initialisation function
+
+1.0.2
+=====
+    - Fix a segfault when MySQL close itself the connection before sending the
+      request
+
 1.0.1
 =====
-    - Fix a bug where mod_deflate create a buffer over the mysql result set memory when this one is still used.
+    - Fix a bug where mod_deflate create a buffer over the mysql result set memory
+      when this one is still used.
       (Thanks to Kris for finding and reporting this bug)

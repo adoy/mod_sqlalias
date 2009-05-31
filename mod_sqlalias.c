@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * $Id: mod_sqlalias.c,v 1.13 2009/04/16 16:35:50 adoy Exp $
+ * $Id: mod_sqlalias.c,v 1.15 2009/05/20 15:17:26 adoy Exp $
  */
 
 #include "httpd.h"
@@ -144,15 +144,12 @@ static sqlalias_dbconnect_ret sqlalias_dbconnect(server_rec *s, sqlalias_conf_t 
                         s_cfg->link = (void *)dblink;
                 }
 
+#ifdef SQLALIAS_DEBUG
                 if (s_cfg->connected)
                 {
-
-#ifdef SQLALIAS_DEBUG
-                        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, "sqlalias: Database connection closed. (pid:%d)", getpid());
-#endif /* SQLALIAS_DEBUG */
-
-                        mysql_close(dblink);
+                        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, "sqlalias: Database connection closed by mysql. (pid:%d)", getpid());
                 }
+#endif /* SQLALIAS_DEBUG */
 
                 if (mysql_real_connect(dblink, host, user, passwd, database, tcpport, socketfile, 0)) {
 
@@ -200,7 +197,6 @@ static sqlalias_filter_ret sqlalias_filter(request_rec *r, apr_array_header_t *f
 
 static void sqlalias_child_init(apr_pool_t *p, server_rec *s)
 {
-        sqlalias_conf_t *s_cfg = ap_get_module_config(s->module_config, &sqlalias_module);
         sqlalias_pool = p;
 
 #ifdef SQLALIAS_DEBUG    

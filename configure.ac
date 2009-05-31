@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(sqlalias, 1.0.1, pierrick@webstart.fr, mod_sqlalias)
+AC_INIT(sqlalias, 1.0.3, pierrick@webstart.fr, mod_sqlalias)
 AC_PREREQ(2.53)
 AC_COPYRIGHT([Copyright (c)2007 WebStart.fr.])
 AC_CONFIG_SRCDIR([mod_sqlalias.c])
@@ -9,11 +9,19 @@ AC_CONFIG_HEADER([mod_sqlalias.h])
 # Checks for programs.
 AC_PROG_CC
 
-AC_PATH_PROG(apxspath, apxs2, NOT_FOUND)
+# Check for apxs2
+AC_ARG_WITH([apxs2],
+    AC_HELP_STRING([--with-apxs2=[DIR]], [Define the apxs2 path]),
+    [apxspath=$withval], [apxspath=NOT_FOUND]
+)    
+if test "x$apxspath" = xNOT_FOUND; then
+    AC_PATH_PROG(apxspath, apxs2, NOT_FOUND)
+fi
 if test "x$apxspath" = xNOT_FOUND; then
 	AC_MSG_ERROR([*** apxs2 not found.  Please install apxs2.])
 fi
 
+# Check for apachectl
 AC_PATH_PROG(apachectlpath, apache2ctl, NOT_FOUND)
 
 # Check for headers
@@ -22,6 +30,12 @@ AC_CHECK_HEADERS([unistd.h])
 
 # Check for librarys 
 AC_CHECK_LIB([m], [main])
+
+# Check for MYSQL
+AC_ARG_WITH([mysql],
+    AC_HELP_STRING([--with-mysql=[DIR]], [Define the mysqllib path]),
+    [LIBS="-L$withval"], [mysql_lib_define=no]
+)
 AC_CHECK_LIB([mysqlclient], [mysql_real_connect], [], [
     AC_MSG_ERROR([*** mysqlclient not found.  Please install mysqlclient.])
 ])
@@ -44,7 +58,6 @@ if test x$debug_mode != xno; then
 else
 	AC_MSG_RESULT([no])
 fi
-
 # --with-pconnect
 AC_ARG_WITH([pconnect],
             AC_HELP_STRING([--with-pconnect], [compile with a mysql persistant connection (default is disabled)]),
