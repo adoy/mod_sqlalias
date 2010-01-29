@@ -66,6 +66,9 @@ SQLAliasDbParam socketfile "/path/to/mysql.sock"
 # get the rewrited URI. The first returned column must be the rewrite/redirect
 # address for your source (this can be a relative path or an URI). 
 # The second column (not mandatory) is the apache HTTP response code.
+#  
+# The default response code is -1 and means that other modules can reprocess the URI
+# If a different response code is given, no other rewrite will take place
 #
 # SQLAliasQuery "SELECT destination, code FROM table WHERE source='%s' LIMIT 1"
 #
