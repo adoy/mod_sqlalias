@@ -1,6 +1,6 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(sqlalias, 1.0.4, pierrick@webstart.fr, mod_sqlalias)
+AC_INIT(sqlalias, 1.0.5, pierrick@webstart.fr, mod_sqlalias)
 AC_PREREQ(2.53)
 AC_COPYRIGHT([Copyright (c)2009 WebStart.fr.])
 AC_CONFIG_SRCDIR([mod_sqlalias.c])

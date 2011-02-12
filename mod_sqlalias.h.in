@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * $Id: mod_sqlalias.h.in,v 1.4 2008/10/07 15:55:12 adoy Stable $
+ * $Id: mod_sqlalias.h.in,v 1.5 2011/02/11 19:16:06 adoy Exp $
  */
 
 #ifndef MOD_SQLALIAS_H
@@ -43,8 +43,6 @@ typedef struct {
         int enable;                     /* Enable */
         char *db_query;                 /* Query */
         apr_table_t *parms;             /* DB connection parameters */
-        int connected;                  /* Are we connected to the DB */
-        MYSQL *link;                    /* DB specific connection pointer */
         apr_array_header_t *filters;    /* Filters */
 } sqlalias_conf_t;
 

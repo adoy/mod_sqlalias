@@ -1,3 +1,8 @@
+1.0.5
+=====
+    - Fix concurrency issue 
+    - Fix internal error when mysql result code is 200
+
 1.0.4
 =====
     - Modify the translate_name hook place to be executed before mod_rewrite
