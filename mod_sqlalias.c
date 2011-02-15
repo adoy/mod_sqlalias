@@ -95,41 +95,43 @@ static const char *set_sqlalias_enable(cmd_parms *cmd, void *in_dconf, int flag)
 static MYSQL *sqlalias_dbconnect(server_rec *s, sqlalias_conf_t *s_cfg)
 {
 #ifdef SQLALIAS_USE_PCONNECT
+	MYSQL *dblink;
 	apr_thread_mutex_lock(sqlalias_mutex);
-	MYSQL *dblink = sqlalias_db_handler;
+	dblink = sqlalias_db_handler;
 #else
 	MYSQL *dblink = NULL;
 #endif /* SQLALIAS_USE_PCONNECT */
 
-	const char *host = apr_table_get(s_cfg->parms, "hostname");
-	const char *user = apr_table_get(s_cfg->parms, "username");
-	const char *passwd = apr_table_get(s_cfg->parms, "password");
-	const char *database = apr_table_get(s_cfg->parms, "database");
-	const char *s_tcpport = apr_table_get(s_cfg->parms, "port");
-	unsigned int tcpport = (s_tcpport)?atoi(s_tcpport):3306;
-	const char *socketfile = apr_table_get(s_cfg->parms, "socketfile");
-
+	
 	if(!dblink) {
 		dblink = mysql_init(dblink);
 	} else if (!mysql_ping(dblink)) {
 		return dblink;
-	}
+	} else {
+		const char *host = apr_table_get(s_cfg->parms, "hostname");
+		const char *user = apr_table_get(s_cfg->parms, "username");
+		const char *passwd = apr_table_get(s_cfg->parms, "password");
+		const char *database = apr_table_get(s_cfg->parms, "database");
+		const char *s_tcpport = apr_table_get(s_cfg->parms, "port");
+		unsigned int tcpport = (s_tcpport)?atoi(s_tcpport):3306;
+		const char *socketfile = apr_table_get(s_cfg->parms, "socketfile");
 
-	if (mysql_real_connect(dblink, host, user, passwd, database, tcpport, socketfile, 0)) {
-		DEBUG_MSG(s, "sqlalias: Database connection open on mysql://%s:%s@%s:%d/%s (pid:%d)", user, passwd, host, tcpport, database, getpid());
+		if (mysql_real_connect(dblink, host, user, passwd, database, tcpport, socketfile, 0)) {
+			DEBUG_MSG(s, "sqlalias: Database connection open on mysql://%s:%s@%s:%d/%s (pid:%d)", user, passwd, host, tcpport, database, getpid());
 
 #ifdef SQLALIAS_USE_PCONNECT
-		sqlalias_db_handler = dblink;
+			sqlalias_db_handler = dblink;
 #endif /* SQLALIAS_USE_PCONNECT */
 
-		return dblink;
-	} else {
-		ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "sqlalias: Could not connect to database (%s)", mysql_error(dblink));
-		mysql_close(dblink);
+			return dblink;
+		} else {
+			ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "sqlalias: Could not connect to database (%s)", mysql_error(dblink));
+			mysql_close(dblink);
 #ifdef SQLALIAS_USE_PCONNECT	
-		apr_thread_mutex_unlock(sqlalias_mutex);
+			apr_thread_mutex_unlock(sqlalias_mutex);
 #endif /* SQLALIAS_USE_PCONNECT */
-		return NULL;
+			return NULL;
+		}
 	}
 }
 
