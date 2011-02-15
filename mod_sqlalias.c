@@ -130,9 +130,9 @@ static MYSQL *sqlalias_dbconnect(server_rec *s, sqlalias_conf_t *s_cfg)
 #ifdef SQLALIAS_USE_PCONNECT	
 			apr_thread_mutex_unlock(sqlalias_mutex);
 #endif /* SQLALIAS_USE_PCONNECT */
-			return NULL;
 		}
 	}
+	return NULL;
 }
 
 static sqlalias_filter_ret sqlalias_filter(request_rec *r, apr_array_header_t *filters)
