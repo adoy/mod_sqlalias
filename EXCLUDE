@@ -7,3 +7,4 @@ config.status
 configure.ac
 autom4te.cache
 mod_sqlalias
+.git
